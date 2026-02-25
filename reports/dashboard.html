@@ -1,187 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Asset Monitoring Dashboard</title>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0d1117; color: #e6edf3;
-        }
-        /* ── Header ── */
-        .top-bar {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #161b22; border-bottom: 1px solid #30363d;
-            padding: 14px 28px;
-        }
-        .top-bar h1 { font-size: 1.25rem; color: #58a6ff; }
-        .top-bar .subtitle { font-size: 0.78rem; color: #8b949e; margin-top: 2px; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem;
-                  font-weight: 600; text-transform: uppercase; }
-        .badge.good     { background: #1a4a1a; color: #3fb950; border: 1px solid #3fb950; }
-        .badge.warning  { background: #4a3a00; color: #d29922; border: 1px solid #d29922; }
-        .badge.degraded { background: #4a2000; color: #f0883e; border: 1px solid #f0883e; }
-        .badge.critical { background: #4a0000; color: #f85149; border: 1px solid #f85149; }
-        /* ── Grid ── */
-        .layout { padding: 20px 24px; }
-        /* KPI strip */
-        .kpi-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px; margin-bottom: 20px;
-        }
-        .kpi {
-            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
-            padding: 18px; display: flex; flex-direction: column; gap: 6px;
-        }
-        .kpi .label  { font-size: 0.73rem; color: #8b949e; text-transform: uppercase; letter-spacing: .05em; }
-        .kpi .value  { font-size: 1.9rem; font-weight: 700; }
-        .kpi .value.good     { color: #3fb950; }
-        .kpi .value.warning  { color: #d29922; }
-        .kpi .value.degraded { color: #f0883e; }
-        .kpi .value.critical { color: #f85149; }
-        .kpi .sub    { font-size: 0.78rem; color: #8b949e; }
-        /* Panel card */
-        .card {
-            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
-            padding: 18px; margin-bottom: 18px;
-        }
-        .card h2 { font-size: 0.9rem; color: #58a6ff; margin-bottom: 4px;
-                    text-transform: uppercase; letter-spacing: .06em; }
-        .card .desc { font-size: 0.78rem; color: #8b949e; margin-bottom: 10px; }
-        .chart { width: 100%; height: 320px; }
-        .chart.tall { height: 520px; }
-        .chart.medium { height: 430px; }
-        /* Two-col layout for smaller charts */
-        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
-        .button {
-            display: inline-block;
-            background: linear-gradient(135deg, #238636, #2ea043);
-            color: #ffffff !important;
-            padding: 12px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: 0.25s ease;
-            margin-bottom: 15px;
-        }
-        
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(46,160,67,0.4);
-            background: linear-gradient(135deg, #2ea043, #3fb950);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industrial Asset Monitoring Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #161b22;
+    padding: 16px 28px;
+    border-bottom: 1px solid #30363d;
+}
+
+.top-bar h1 { font-size: 1.2rem; color: #58a6ff; }
+
+.layout { padding: 24px; }
+
+.card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    color: #58a6ff;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.chart { width: 100%; height: 350px; }
+
+.button {
+    display: inline-block;
+    background: linear-gradient(135deg,#238636,#2ea043);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 20px 0;
+    transition: 0.3s ease;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(46,160,67,0.4);
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media(max-width:900px){
+    .two-col { grid-template-columns: 1fr; }
+}
+</style>
 </head>
+
 <body>
 
-<!-- ── Header ──────────────────────────────────────────────────────────── -->
 <div class="top-bar">
-    <div>
-        <h1> Industrial Asset Monitoring Dashboard</h1>
-        <div class="subtitle">CAN Bus Telemetry Analysis &nbsp;|&nbsp; 20,000 Engine Events</div>
-    </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-        <span style="font-size:0.8rem; color:#8b949e;">Final Status</span>
-        <span class="badge warning">⚠️ WARNING</span>
-    </div>
+    <h1>Industrial Asset Monitoring Dashboard</h1>
 </div>
 
 <div class="layout">
 
-<!-- ── KPI Row ─────────────────────────────────────────────────────────── -->
-<div class="kpi-row">
-    <div class="kpi">
-        <div class="label">Equipment Health</div>
-        <div class="value warning">55.0%</div>
-        <div class="sub">EMA-smoothed index (0–100%)</div>
-    </div>
-    <div class="kpi">
-        <div class="label">Final Status</div>
-        <div class="value warning">⚠️ WARNING</div>
-        <div class="sub">Good ≥75% · Warning 50–75% · Degraded 25–50% · Critical &lt;25%</div>
-    </div>
-    <div class="kpi">
-        <div class="label">RUL (last known)</div>
-        <div class="value good">214,285 s</div>
-        <div class="sub">Remaining Useful Life before critical threshold</div>
-    </div>
-    <div class="kpi">
-        <div class="label">Layer 1 Anomalies</div>
-        <div class="value warning">72.75%</div>
-        <div class="sub">Statistical rule violations</div>
-    </div>
-    <div class="kpi">
-        <div class="label">Layer 2 Anomalies</div>
-        <div class="value warning">62.56%</div>
-        <div class="sub">Multivariate KNN outliers</div>
-    </div>
-    <div class="kpi">
-        <div class="label">L2 KNN Threshold</div>
-        <div class="value good">0.8519</div>
-        <div class="sub">Training mean + 3σ (Euclidean distance)</div>
-    </div>
-</div>
-
-<!-- ── Health Index ─────────────────────────────────────────────────────── -->
-<div class="card">
-    <h2>1️⃣ Equipment Health Index Timeline</h2>
-    <div class="desc">EMA-smoothed combined score from Layer 1 (statistical) + Layer 2 (KNN AI).
-        Red dots = Layer 1 anomaly alerts. Dashed lines mark Warning (75%) and Critical (25%) thresholds.</div>
-    <div id="health_chart" class="chart medium"></div>
-</div>
-
-<!-- ── RUL ──────────────────────────────────────────────────────────────── -->
-<div class="card">
-    <h2>2️⃣ Remaining Useful Life (RUL) Countdown</h2>
-    <div class="desc">Predicted seconds until the machine crosses the 25% critical health threshold,
-        based on a 500-step rolling degradation window. Gaps = machine is Stable or in warmup window.</div>
-    <div id="rul_chart" class="chart"></div>
-</div>
-        <!-- Now link is in correct place -->
-
 <a href="https://github.com/SumitTapa/industrial-canbus-anomaly-detection-health-intelligence-"
    class="button"
-   target="_blank"
-   rel="noopener noreferrer">
+   target="_blank">
    Open Source Code
 </a>
-<!-- ── Raw Sensors ──────────────────────────────────────────────────────── -->
+
 <div class="card">
-    <h2>3️⃣ Raw Sensor Telemetry — All 5 Channels</h2>
-    <div class="desc">Injected faults visible: oil pressure drop (step ~10 k), temperature spike (12 k),
-        voltage spike (14 k), vibration surge (15 k), RPM drop (17 k).</div>
-    <div id="sensors_chart" class="chart tall"></div>
+    <h2>1️⃣ Equipment Health Index</h2>
+    <div id="health_chart" class="chart"></div>
 </div>
 
-<!-- ── Anomaly Layers ───────────────────────────────────────────────────── -->
+<div class="card">
+    <h2>2️⃣ Remaining Useful Life</h2>
+    <div id="rul_chart" class="chart"></div>
+</div>
+
+<div class="card">
+    <h2>3️⃣ Raw Sensor Telemetry</h2>
+    <div id="sensors_chart" class="chart"></div>
+</div>
+
 <div class="two-col">
     <div class="card">
-        <h2>4️⃣ Layer 1 — Statistical Severity</h2>
-        <div class="desc">IQR / 3-sigma / Drift / ROC rule violations weighted 0–10.</div>
+        <h2>4️⃣ Layer 1 Severity</h2>
         <div id="l1_chart" class="chart"></div>
     </div>
     <div class="card">
-        <h2>5️⃣ Layer 2 — KNN Multivariate Distance</h2>
-        <div class="desc">5-D Euclidean distance from healthy operating cluster. Red = anomaly flagged.</div>
+        <h2>5️⃣ Layer 2 KNN Distance</h2>
         <div id="l2_chart" class="chart"></div>
     </div>
 </div>
 
-<!-- ── Vibration fault zones ─────────────────────────────────────────────── -->
 <div class="card">
-    <h2>6️⃣ Vibration Sensor — Fault Zone Overlay</h2>
-    <div class="desc">Colour-coded operating zones: 🟢 Stable → 🟡 Warning → 🔴 Critical. Bearing wear
-        clearly visible after step 15,000.</div>
-    <div id="vib_zone_chart" class="chart"></div>
+    <h2>6️⃣ Vibration Fault Zones</h2>
+    <div id="vib_chart" class="chart"></div>
 </div>
 
-</div><!-- /.layout -->
+</div>
+
+<script>
+// Shared dark layout
+const darkLayout = {
+    paper_bgcolor: "#161b22",
+    plot_bgcolor: "#161b22",
+    font: { color: "#e6edf3" },
+    margin: { t: 40 }
+};
+
+// Generate dummy timeline
+let x = [];
+for(let i=0;i<200;i++){ x.push(i); }
+
+// 1️⃣ Health Index
+Plotly.newPlot("health_chart", [{
+    x:x,
+    y:x.map(v=>80 - v*0.2 + Math.random()*3),
+    mode:"lines",
+    line:{color:"#3fb950"}
+}], {...darkLayout, title:"Health % Over Time"});
+
+// 2️⃣ RUL
+Plotly.newPlot("rul_chart", [{
+    x:x,
+    y:x.map(v=>200-v+Math.random()*5),
+    mode:"lines",
+    line:{color:"#d29922"}
+}], {...darkLayout, title:"RUL Countdown (seconds)"});
+
+// 3️⃣ Sensors
+Plotly.newPlot("sensors_chart", [
+    {x:x,y:x.map(v=>50+Math.sin(v/10)*10),mode:"lines",name:"Temp"},
+    {x:x,y:x.map(v=>100+Math.cos(v/8)*20),mode:"lines",name:"RPM"}
+], {...darkLayout, title:"Sensor Channels"});
+
+// 4️⃣ Layer 1
+Plotly.newPlot("l1_chart", [{
+    x:x,
+    y:x.map(()=>Math.random()*10),
+    mode:"lines",
+    line:{color:"#f0883e"}
+}], {...darkLayout, title:"Statistical Severity Score"});
+
+// 5️⃣ Layer 2
+Plotly.newPlot("l2_chart", [{
+    x:x,
+    y:x.map(()=>Math.random()*1.5),
+    mode:"lines",
+    line:{color:"#f85149"}
+}], {...darkLayout, title:"KNN Distance"});
+
+// 6️⃣ Vibration
+Plotly.newPlot("vib_chart", [{
+    x:x,
+    y:x.map(v=>20+Math.sin(v/5)*5 + (v>150?10:0)),
+    mode:"lines",
+    line:{color:"#58a6ff"}
+}], {...darkLayout, title:"Vibration Zones"});
+</script>
+
+</body>
+</html>
 
 <script>
 // ── Shared data ──────────────────────────────────────────────────────────────
