@@ -12,7 +12,6 @@ Output: data/processed/rul_predictions.csv
 """
 
 import csv
-import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,14 +19,18 @@ PROC_DIR = ROOT / "data" / "processed"
 
 
 def load_csv(filepath):
-    try:
-        with open(filepath, "r") as f:
-            reader = csv.reader(f)
-            header = next(reader)
-            data = list(reader)
-        return header, data
-    except Exception as e:
+    path = Path(filepath)
+    if not path.exists():
         return None, None
+
+    with open(path, "r") as f:
+        reader = csv.reader(f)
+        try:
+            header = next(reader)
+        except StopIteration:
+            return None, None
+        data = list(reader)
+    return header, data
 
 
 # ======================================================================
