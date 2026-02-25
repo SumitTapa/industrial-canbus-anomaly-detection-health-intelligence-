@@ -10,14 +10,6 @@ venv*/
 .venv/
 env/
 
-# Generated data (re-create by running pipeline)
-data/raw/*.csv
-data/processed/*.csv
-
-# Generated reports
-reports/*.pdf
-reports/*.html
-
 # OS
 .DS_Store
 Thumbs.db
