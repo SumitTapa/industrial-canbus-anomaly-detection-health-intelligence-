@@ -12,7 +12,6 @@ Output: data/processed/rul_predictions.csv
 """
 
 import csv
-import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,14 +19,18 @@ PROC_DIR = ROOT / "data" / "processed"
 
 
 def load_csv(filepath):
-    try:
-        with open(filepath, "r") as f:
-            reader = csv.reader(f)
-            header = next(reader)
-            data = list(reader)
-        return header, data
-    except Exception as e:
+    path = Path(filepath)
+    if not path.exists():
         return None, None
+
+    with open(path, "r") as f:
+        reader = csv.reader(f)
+        try:
+            header = next(reader)
+        except StopIteration:
+            return None, None
+        data = list(reader)
+    return header, data
 
 
 # ======================================================================
@@ -112,9 +115,13 @@ def run_comparison():
         sk_anomalies = sum(1 for row in data_sk if int(row[2]) == 1)
         sk_total = len(data_sk)
         print(f"    Option B (Isolation Forest): {sk_anomalies} / {sk_total} ({100 * sk_anomalies / sk_total:.2f}%)")
-        overlap = sum(1 for i in range(len(data_knn))
-                      if int(data_knn[i][2]) == 1 and int(data_sk[i][2]) == 1)
-        print(f"    Model overlap: {overlap}")
+
+        if data_knn:
+            overlap = sum(1 for i in range(min(len(data_knn), len(data_sk)))
+                          if int(data_knn[i][2]) == 1 and int(data_sk[i][2]) == 1)
+            print(f"    Model overlap: {overlap}")
+        else:
+            print("    Model overlap: unavailable (Option A results missing)")
     else:
         print("    Option B results not found (requires scikit-learn).")
 
