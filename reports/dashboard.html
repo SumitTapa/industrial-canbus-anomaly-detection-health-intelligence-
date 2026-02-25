@@ -58,6 +58,24 @@
         /* Two-col layout for smaller charts */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: #ffffff !important;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: 0.25s ease;
+            margin-bottom: 15px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(46,160,67,0.4);
+            background: linear-gradient(135deg, #2ea043, #3fb950);
+        }
     </style>
 </head>
 <body>
