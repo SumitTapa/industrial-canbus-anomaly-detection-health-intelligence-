@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv*/
+.venv/
+env/
+
+# Generated data (re-create by running pipeline)
+data/raw/*.csv
+data/processed/*.csv
+
+# Generated reports
+reports/*.pdf
+reports/*.html
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Jupyter
+.ipynb_checkpoints/
