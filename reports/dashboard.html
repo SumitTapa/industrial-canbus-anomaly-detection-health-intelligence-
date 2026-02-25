@@ -4,186 +4,161 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Industrial Asset Monitoring Dashboard</title>
+    Project Link:<a href="https://example.com" class="button">Click Me</a>
+    <a href="https://sumittapa.github.io/industrial-canbus-anomaly-detection-health-intelligence-/reports/dashboard.html" class="button">Project Link</a>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #0d1117;
-    color: #e6edf3;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: #0d1117; color: #e6edf3;
 }
-
+/* ── Header ── */
 .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #161b22;
-    padding: 16px 28px;
-    border-bottom: 1px solid #30363d;
+display: flex; align-items: center; justify-content: space-between;
+background: #161b22; border-bottom: 1px solid #30363d;
+padding: 14px 28px;
 }
-
-.top-bar h1 { font-size: 1.2rem; color: #58a6ff; }
-
-.layout { padding: 24px; }
-
+.top-bar h1 { font-size: 1.25rem; color: #58a6ff; }
+.top-bar .subtitle { font-size: 0.78rem; color: #8b949e; margin-top: 2px; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem;
+font-weight: 600; text-transform: uppercase; }
+.badge.good     { background: #1a4a1a; color: #3fb950; border: 1px solid #3fb950; }
+.badge.warning  { background: #4a3a00; color: #d29922; border: 1px solid #d29922; }
+.badge.degraded { background: #4a2000; color: #f0883e; border: 1px solid #f0883e; }
+.badge.critical { background: #4a0000; color: #f85149; border: 1px solid #f85149; }
+/* ── Grid ── */
+.layout { padding: 20px 24px; }
+/* KPI strip */
+.kpi-row {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+gap: 16px; margin-bottom: 20px;
+}
+.kpi {
+background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+padding: 18px; display: flex; flex-direction: column; gap: 6px;
+}
+.kpi .label  { font-size: 0.73rem; color: #8b949e; text-transform: uppercase; letter-spacing: .05em; }
+.kpi .value  { font-size: 1.9rem; font-weight: 700; }
+.kpi .value.good     { color: #3fb950; }
+.kpi .value.warning  { color: #d29922; }
+.kpi .value.degraded { color: #f0883e; }
+.kpi .value.critical { color: #f85149; }
+.kpi .sub    { font-size: 0.78rem; color: #8b949e; }
+/* Panel card */
 .card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 20px;
+background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+padding: 18px; margin-bottom: 18px;
 }
-
-.card h2 {
-    color: #58a6ff;
-    font-size: 0.9rem;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-}
-
-.chart { width: 100%; height: 350px; }
-
-.button {
-    display: inline-block;
-    background: linear-gradient(135deg,#238636,#2ea043);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    margin: 20px 0;
-    transition: 0.3s ease;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(46,160,67,0.4);
-}
-
-.two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-@media(max-width:900px){
-    .two-col { grid-template-columns: 1fr; }
-}
+.card h2 { font-size: 0.9rem; color: #58a6ff; margin-bottom: 4px;
+text-transform: uppercase; letter-spacing: .06em; }
+.card .desc { font-size: 0.78rem; color: #8b949e; margin-bottom: 10px; }
+.chart { width: 100%; height: 320px; }
+.chart.tall { height: 520px; }
+.chart.medium { height: 430px; }
+/* Two-col layout for smaller charts */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 </style>
 </head>
-
 <body>
 
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
 <div class="top-bar">
-    <h1>Industrial Asset Monitoring Dashboard</h1>
+<div>
+<h1> Industrial Asset Monitoring Dashboard</h1>
+<div class="subtitle">CAN Bus Telemetry Analysis &nbsp;|&nbsp; 20,000 Engine Events</div>
+</div>
+<div style="display:flex; gap:10px; align-items:center;">
+<span style="font-size:0.8rem; color:#8b949e;">Final Status</span>
+<span class="badge warning">⚠️ WARNING</span>
+</div>
 </div>
 
 <div class="layout">
 
-<a href="https://github.com/SumitTapa/industrial-canbus-anomaly-detection-health-intelligence-"
-   class="button"
-   target="_blank">
-   Open Source Code
-</a>
-
-<div class="card">
-    <h2>1️⃣ Equipment Health Index</h2>
-    <div id="health_chart" class="chart"></div>
+<!-- ── KPI Row ─────────────────────────────────────────────────────────── -->
+<div class="kpi-row">
+<div class="kpi">
+<div class="label">Equipment Health</div>
+<div class="value warning">55.0%</div>
+<div class="sub">EMA-smoothed index (0–100%)</div>
+</div>
+<div class="kpi">
+<div class="label">Final Status</div>
+<div class="value warning">⚠️ WARNING</div>
+<div class="sub">Good ≥75% · Warning 50–75% · Degraded 25–50% · Critical &lt;25%</div>
+</div>
+<div class="kpi">
+<div class="label">RUL (last known)</div>
+<div class="value good">214,285 s</div>
+<div class="sub">Remaining Useful Life before critical threshold</div>
+</div>
+<div class="kpi">
+<div class="label">Layer 1 Anomalies</div>
+<div class="value warning">72.75%</div>
+<div class="sub">Statistical rule violations</div>
+</div>
+<div class="kpi">
+<div class="label">Layer 2 Anomalies</div>
+<div class="value warning">62.56%</div>
+<div class="sub">Multivariate KNN outliers</div>
+</div>
+<div class="kpi">
+<div class="label">L2 KNN Threshold</div>
+<div class="value good">0.8519</div>
+<div class="sub">Training mean + 3σ (Euclidean distance)</div>
+</div>
 </div>
 
+<!-- ── Health Index ─────────────────────────────────────────────────────── -->
 <div class="card">
-    <h2>2️⃣ Remaining Useful Life</h2>
-    <div id="rul_chart" class="chart"></div>
+<h2>1️⃣ Equipment Health Index Timeline</h2>
+<div class="desc">EMA-smoothed combined score from Layer 1 (statistical) + Layer 2 (KNN AI).
+Red dots = Layer 1 anomaly alerts. Dashed lines mark Warning (75%) and Critical (25%) thresholds.</div>
+<div id="health_chart" class="chart medium"></div>
 </div>
 
+<!-- ── RUL ──────────────────────────────────────────────────────────────── -->
 <div class="card">
-    <h2>3️⃣ Raw Sensor Telemetry</h2>
-    <div id="sensors_chart" class="chart"></div>
+<h2>2️⃣ Remaining Useful Life (RUL) Countdown</h2>
+<div class="desc">Predicted seconds until the machine crosses the 25% critical health threshold,
+based on a 500-step rolling degradation window. Gaps = machine is Stable or in warmup window.</div>
+<div id="rul_chart" class="chart"></div>
 </div>
 
+<!-- ── Raw Sensors ──────────────────────────────────────────────────────── -->
+<div class="card">
+<h2>3️⃣ Raw Sensor Telemetry — All 5 Channels</h2>
+<div class="desc">Injected faults visible: oil pressure drop (step ~10 k), temperature spike (12 k),
+voltage spike (14 k), vibration surge (15 k), RPM drop (17 k).</div>
+<div id="sensors_chart" class="chart tall"></div>
+</div>
+
+<!-- ── Anomaly Layers ───────────────────────────────────────────────────── -->
 <div class="two-col">
-    <div class="card">
-        <h2>4️⃣ Layer 1 Severity</h2>
-        <div id="l1_chart" class="chart"></div>
-    </div>
-    <div class="card">
-        <h2>5️⃣ Layer 2 KNN Distance</h2>
-        <div id="l2_chart" class="chart"></div>
-    </div>
-</div>
-
 <div class="card">
-    <h2>6️⃣ Vibration Fault Zones</h2>
-    <div id="vib_chart" class="chart"></div>
+<h2>4️⃣ Layer 1 — Statistical Severity</h2>
+<div class="desc">IQR / 3-sigma / Drift / ROC rule violations weighted 0–10.</div>
+<div id="l1_chart" class="chart"></div>
+</div>
+<div class="card">
+<h2>5️⃣ Layer 2 — KNN Multivariate Distance</h2>
+<div class="desc">5-D Euclidean distance from healthy operating cluster. Red = anomaly flagged.</div>
+<div id="l2_chart" class="chart"></div>
+</div>
 </div>
 
+<!-- ── Vibration fault zones ─────────────────────────────────────────────── -->
+<div class="card">
+<h2>6️⃣ Vibration Sensor — Fault Zone Overlay</h2>
+<div class="desc">Colour-coded operating zones: 🟢 Stable → 🟡 Warning → 🔴 Critical. Bearing wear
+clearly visible after step 15,000.</div>
+<div id="vib_zone_chart" class="chart"></div>
 </div>
 
-<script>
-// Shared dark layout
-const darkLayout = {
-    paper_bgcolor: "#161b22",
-    plot_bgcolor: "#161b22",
-    font: { color: "#e6edf3" },
-    margin: { t: 40 }
-};
-
-// Generate dummy timeline
-let x = [];
-for(let i=0;i<200;i++){ x.push(i); }
-
-// 1️⃣ Health Index
-Plotly.newPlot("health_chart", [{
-    x:x,
-    y:x.map(v=>80 - v*0.2 + Math.random()*3),
-    mode:"lines",
-    line:{color:"#3fb950"}
-}], {...darkLayout, title:"Health % Over Time"});
-
-// 2️⃣ RUL
-Plotly.newPlot("rul_chart", [{
-    x:x,
-    y:x.map(v=>200-v+Math.random()*5),
-    mode:"lines",
-    line:{color:"#d29922"}
-}], {...darkLayout, title:"RUL Countdown (seconds)"});
-
-// 3️⃣ Sensors
-Plotly.newPlot("sensors_chart", [
-    {x:x,y:x.map(v=>50+Math.sin(v/10)*10),mode:"lines",name:"Temp"},
-    {x:x,y:x.map(v=>100+Math.cos(v/8)*20),mode:"lines",name:"RPM"}
-], {...darkLayout, title:"Sensor Channels"});
-
-// 4️⃣ Layer 1
-Plotly.newPlot("l1_chart", [{
-    x:x,
-    y:x.map(()=>Math.random()*10),
-    mode:"lines",
-    line:{color:"#f0883e"}
-}], {...darkLayout, title:"Statistical Severity Score"});
-
-// 5️⃣ Layer 2
-Plotly.newPlot("l2_chart", [{
-    x:x,
-    y:x.map(()=>Math.random()*1.5),
-    mode:"lines",
-    line:{color:"#f85149"}
-}], {...darkLayout, title:"KNN Distance"});
-
-// 6️⃣ Vibration
-Plotly.newPlot("vib_chart", [{
-    x:x,
-    y:x.map(v=>20+Math.sin(v/5)*5 + (v>150?10:0)),
-    mode:"lines",
-    line:{color:"#58a6ff"}
-}], {...darkLayout, title:"Vibration Zones"});
-</script>
-
-</body>
-</html>
+</div><!-- /.layout -->
 
 <script>
 // ── Shared data ──────────────────────────────────────────────────────────────
@@ -205,108 +180,108 @@ const l2_thr  = 0.8519;
 
 // Common dark layout template
 function darkLayout(title, yaxis, xaxis) {
-    return {
-        title: title ? { text: title, font: { color:'#58a6ff', size:13 } } : undefined,
-        paper_bgcolor: '#161b22',
-        plot_bgcolor:  '#0d1117',
-        font: { color: '#8b949e', size: 11 },
-        xaxis: Object.assign({ gridcolor:'#21262d', zerolinecolor:'#30363d',
-                                tickfont:{color:'#8b949e'} }, xaxis),
-        yaxis: Object.assign({ gridcolor:'#21262d', zerolinecolor:'#30363d',
-                                tickfont:{color:'#8b949e'} }, yaxis),
-        margin: { t:40, b:45, l:55, r:20 },
-        hovermode: 'x unified',
-        legend: { bgcolor:'rgba(22,27,34,0.9)', bordercolor:'#30363d',
-                   borderwidth:1, font:{ color:'#e6edf3', size:10 } }
-    };
+return {
+title: title ? { text: title, font: { color:'#58a6ff', size:13 } } : undefined,
+paper_bgcolor: '#161b22',
+plot_bgcolor:  '#0d1117',
+font: { color: '#8b949e', size: 11 },
+xaxis: Object.assign({ gridcolor:'#21262d', zerolinecolor:'#30363d',
+tickfont:{color:'#8b949e'} }, xaxis),
+yaxis: Object.assign({ gridcolor:'#21262d', zerolinecolor:'#30363d',
+tickfont:{color:'#8b949e'} }, yaxis),
+margin: { t:40, b:45, l:55, r:20 },
+hovermode: 'x unified',
+legend: { bgcolor:'rgba(22,27,34,0.9)', bordercolor:'#30363d',
+borderwidth:1, font:{ color:'#e6edf3', size:10 } }
+};
 }
 
 const config = { responsive: true, displayModeBar: false };
 
 // ── 1. Health Index ──────────────────────────────────────────────────────────
 Plotly.newPlot('health_chart', [
-    { x:T, y:raw_h, name:'Instantaneous Health', type:'scatter',
-       line:{color:'#30363d', width:1}, opacity:0.5 },
-    { x:T, y:health, name:'Smoothed Health (EMA)', type:'scatter',
-       line:{color:'#58a6ff', width:2}, fill:'tozeroy', fillcolor:'rgba(88,166,255,0.08)' },
-    { x:anom_t, y:anom_h, name:'Layer-1 Alert', type:'scatter', mode:'markers',
-       marker:{color:'#f85149', size:5, symbol:'x-thin', line:{color:'#f85149', width:2}} }
+{ x:T, y:raw_h, name:'Instantaneous Health', type:'scatter',
+line:{color:'#30363d', width:1}, opacity:0.5 },
+{ x:T, y:health, name:'Smoothed Health (EMA)', type:'scatter',
+line:{color:'#58a6ff', width:2}, fill:'tozeroy', fillcolor:'rgba(88,166,255,0.08)' },
+{ x:anom_t, y:anom_h, name:'Layer-1 Alert', type:'scatter', mode:'markers',
+marker:{color:'#f85149', size:5, symbol:'x-thin', line:{color:'#f85149', width:2}} }
 ], Object.assign(darkLayout(null, {title:'Health (%)', range:[-1,105]}, {title:'Timestamp'}), {
-    shapes: [
-        {type:'line', x0:T[0], x1:T[T.length-1], y0:75, y1:75,
-          line:{color:'#d29922', width:1.5, dash:'dot'}},
-        {type:'line', x0:T[0], x1:T[T.length-1], y0:50, y1:50,
-          line:{color:'#f0883e', width:1.5, dash:'dot'}},
-        {type:'line', x0:T[0], x1:T[T.length-1], y0:25, y1:25,
-          line:{color:'#f85149', width:1.5, dash:'dot'}},
-        // Fault region shading
-        {type:'rect', x0:'2025-01-01 02:46:40', x1:'2025-01-01 02:47:50',
-          y0:-1, y1:106, fillcolor:'rgba(248,81,73,0.06)', line:{width:0}},
-    ],
-    annotations: [
-        {x:T[0], y:75, xref:'x', yref:'y', text:'  Warning 75%', showarrow:false,
-          font:{color:'#d29922', size:10}, xanchor:'left' },
-        {x:T[0], y:50, xref:'x', yref:'y', text:'  Degraded 50%', showarrow:false,
-          font:{color:'#f0883e', size:10}, xanchor:'left' },
-        {x:T[0], y:25, xref:'x', yref:'y', text:'  Critical 25%', showarrow:false,
-          font:{color:'#f85149', size:10}, xanchor:'left' },
-    ]
+shapes: [
+{type:'line', x0:T[0], x1:T[T.length-1], y0:75, y1:75,
+line:{color:'#d29922', width:1.5, dash:'dot'}},
+{type:'line', x0:T[0], x1:T[T.length-1], y0:50, y1:50,
+line:{color:'#f0883e', width:1.5, dash:'dot'}},
+{type:'line', x0:T[0], x1:T[T.length-1], y0:25, y1:25,
+line:{color:'#f85149', width:1.5, dash:'dot'}},
+// Fault region shading
+{type:'rect', x0:'2025-01-01 02:46:40', x1:'2025-01-01 02:47:50',
+y0:-1, y1:106, fillcolor:'rgba(248,81,73,0.06)', line:{width:0}},
+],
+annotations: [
+{x:T[0], y:75, xref:'x', yref:'y', text:'  Warning 75%', showarrow:false,
+font:{color:'#d29922', size:10}, xanchor:'left' },
+{x:T[0], y:50, xref:'x', yref:'y', text:'  Degraded 50%', showarrow:false,
+font:{color:'#f0883e', size:10}, xanchor:'left' },
+{x:T[0], y:25, xref:'x', yref:'y', text:'  Critical 25%', showarrow:false,
+font:{color:'#f85149', size:10}, xanchor:'left' },
+]
 }), config);
 
 // ── 2. RUL ──────────────────────────────────────────────────────────────────
 Plotly.newPlot('rul_chart', [
-    { x:rul_t, y:rul_v, name:'RUL (seconds)', type:'scatter', mode:'lines',
-       line:{color:'#f0883e', width:2},
-       fill:'tozeroy', fillcolor:'rgba(240,136,62,0.1)' }
+{ x:rul_t, y:rul_v, name:'RUL (seconds)', type:'scatter', mode:'lines',
+line:{color:'#f0883e', width:2},
+fill:'tozeroy', fillcolor:'rgba(240,136,62,0.1)' }
 ], darkLayout(null, {title:'Seconds Until Critical Failure'}, {title:'Timestamp'}), config);
 
 // ── 3. Sensors (stacked subplots) ────────────────────────────────────────────
 var sensors_data = [
-    { x:T, y:rpm,  name:'RPM',          yaxis:'y',  line:{color:'#79c0ff', width:1} },
-    { x:T, y:temp, name:'Temp (°C)',     yaxis:'y2', line:{color:'#ffa657', width:1} },
-    { x:T, y:vib,  name:'Vibration',    yaxis:'y3', line:{color:'#3fb950', width:1} },
-    { x:T, y:oil,  name:'Oil Pressure',  yaxis:'y4', line:{color:'#d2a8ff', width:1} },
-    { x:T, y:volt, name:'Voltage',       yaxis:'y5', line:{color:'#ffa198', width:1} },
+{ x:T, y:rpm,  name:'RPM',          yaxis:'y',  line:{color:'#79c0ff', width:1} },
+{ x:T, y:temp, name:'Temp (°C)',     yaxis:'y2', line:{color:'#ffa657', width:1} },
+{ x:T, y:vib,  name:'Vibration',    yaxis:'y3', line:{color:'#3fb950', width:1} },
+{ x:T, y:oil,  name:'Oil Pressure',  yaxis:'y4', line:{color:'#d2a8ff', width:1} },
+{ x:T, y:volt, name:'Voltage',       yaxis:'y5', line:{color:'#ffa198', width:1} },
 ];
 var sensors_layout = {
-    paper_bgcolor:'#161b22', plot_bgcolor:'#0d1117',
-    font:{ color:'#8b949e', size:10 },
-    margin: { t:20, b:40, l:55, r:20 },
-    hovermode:'x unified',
-    grid: { rows:5, columns:1, pattern:'independent', roworder:'top to bottom' },
-    yaxis : { title:'RPM',        gridcolor:'#21262d', domain:[0.82,1.00] },
-    yaxis2: { title:'Temp (°C)',  gridcolor:'#21262d', domain:[0.62,0.80] },
-    yaxis3: { title:'Vibration',  gridcolor:'#21262d', domain:[0.42,0.60] },
-    yaxis4: { title:'Oil (bar)',   gridcolor:'#21262d', domain:[0.22,0.40] },
-    yaxis5: { title:'Voltage (V)', gridcolor:'#21262d', domain:[0.00,0.18] },
-    xaxis : { gridcolor:'#21262d', domain:[0,1], anchor:'y5', showticklabels:false },
-    xaxis2: { gridcolor:'#21262d', domain:[0,1], anchor:'y4', showticklabels:false },
-    xaxis3: { gridcolor:'#21262d', domain:[0,1], anchor:'y3', showticklabels:false },
-    xaxis4: { gridcolor:'#21262d', domain:[0,1], anchor:'y2', showticklabels:false },
-    xaxis5: { gridcolor:'#21262d', domain:[0,1], anchor:'y',  showticklabels:true },
-    legend:{ bgcolor:'rgba(22,27,34,0.9)', bordercolor:'#30363d', borderwidth:1,
-              font:{ color:'#e6edf3', size:10 } },
+paper_bgcolor:'#161b22', plot_bgcolor:'#0d1117',
+font:{ color:'#8b949e', size:10 },
+margin: { t:20, b:40, l:55, r:20 },
+hovermode:'x unified',
+grid: { rows:5, columns:1, pattern:'independent', roworder:'top to bottom' },
+yaxis : { title:'RPM',        gridcolor:'#21262d', domain:[0.82,1.00] },
+yaxis2: { title:'Temp (°C)',  gridcolor:'#21262d', domain:[0.62,0.80] },
+yaxis3: { title:'Vibration',  gridcolor:'#21262d', domain:[0.42,0.60] },
+yaxis4: { title:'Oil (bar)',   gridcolor:'#21262d', domain:[0.22,0.40] },
+yaxis5: { title:'Voltage (V)', gridcolor:'#21262d', domain:[0.00,0.18] },
+xaxis : { gridcolor:'#21262d', domain:[0,1], anchor:'y5', showticklabels:false },
+xaxis2: { gridcolor:'#21262d', domain:[0,1], anchor:'y4', showticklabels:false },
+xaxis3: { gridcolor:'#21262d', domain:[0,1], anchor:'y3', showticklabels:false },
+xaxis4: { gridcolor:'#21262d', domain:[0,1], anchor:'y2', showticklabels:false },
+xaxis5: { gridcolor:'#21262d', domain:[0,1], anchor:'y',  showticklabels:true },
+legend:{ bgcolor:'rgba(22,27,34,0.9)', bordercolor:'#30363d', borderwidth:1,
+font:{ color:'#e6edf3', size:10 } },
 };
 Plotly.newPlot('sensors_chart', sensors_data, sensors_layout, config);
 
 // ── 4. Layer 1 Severity ───────────────────────────────────────────────────────
 Plotly.newPlot('l1_chart', [
-    { x:T, y:l1_sev, name:'Severity (0-10)', type:'bar',
-       marker:{color:'rgba(210,153,34,0.7)', line:{width:0}} }
+{ x:T, y:l1_sev, name:'Severity (0-10)', type:'bar',
+marker:{color:'rgba(210,153,34,0.7)', line:{width:0}} }
 ], darkLayout(null, {title:'Severity Score (0–10)'}, {title:'Timestamp'}), config);
 
 // ── 5. Layer 2 KNN Distance ───────────────────────────────────────────────────
 var l2_anom_t = [], l2_anom_d = [];
 for (var i=0;i<l2_dist.length;i++) {
-    if (l2_dist[i] > l2_thr) { l2_anom_t.push(T[i]); l2_anom_d.push(l2_dist[i]); }
+if (l2_dist[i] > l2_thr) { l2_anom_t.push(T[i]); l2_anom_d.push(l2_dist[i]); }
 }
 Plotly.newPlot('l2_chart', [
-    { x:T, y:l2_dist, name:'KNN Distance', type:'scatter',
-       line:{color:'#8b949e', width:1} },
-    { x:l2_anom_t, y:l2_anom_d, name:'Anomaly', type:'scatter', mode:'markers',
-       marker:{color:'#f85149', size:4} },
-    { x:[T[0],T[T.length-1]], y:[l2_thr,l2_thr], name:'Threshold (mean+3σ)',
-       type:'scatter', mode:'lines', line:{color:'#f85149', width:1.5, dash:'dash'} },
+{ x:T, y:l2_dist, name:'KNN Distance', type:'scatter',
+line:{color:'#8b949e', width:1} },
+{ x:l2_anom_t, y:l2_anom_d, name:'Anomaly', type:'scatter', mode:'markers',
+marker:{color:'#f85149', size:4} },
+{ x:[T[0],T[T.length-1]], y:[l2_thr,l2_thr], name:'Threshold (mean+3σ)',
+type:'scatter', mode:'lines', line:{color:'#f85149', width:1.5, dash:'dash'} },
 ], darkLayout(null, {title:'Euclidean Distance'}, {title:'Timestamp'}), config);
 
 // ── 6. Vibration with fault zones ─────────────────────────────────────────────
@@ -314,30 +289,30 @@ var vib_mean = vib.reduce((a,b)=>a+b,0)/vib.length;
 var vib_warn = vib_mean * 1.4;
 var vib_crit = vib_mean * 1.8;
 Plotly.newPlot('vib_zone_chart', [
-    { x:T, y:vib, name:'Vibration (g)', type:'scatter',
-       line:{color:'#3fb950', width:1.5} }
+{ x:T, y:vib, name:'Vibration (g)', type:'scatter',
+line:{color:'#3fb950', width:1.5} }
 ], Object.assign(darkLayout(null, {title:'Vibration (g)'}, {title:'Timestamp'}), {
-    shapes: [
-        // Good zone
-        {type:'rect', xref:'paper', x0:0, x1:1, y0:0, y1:vib_warn,
-          fillcolor:'rgba(63,185,80,0.06)', line:{width:0}},
-        // Warning zone
-        {type:'rect', xref:'paper', x0:0, x1:1, y0:vib_warn, y1:vib_crit,
-          fillcolor:'rgba(210,153,34,0.10)', line:{width:0}},
-        // Critical zone
-        {type:'rect', xref:'paper', x0:0, x1:1, y0:vib_crit, y1:vib_crit*1.6,
-          fillcolor:'rgba(248,81,73,0.10)', line:{width:0}},
-        {type:'line', xref:'paper', x0:0, x1:1, y0:vib_warn, y1:vib_warn,
-          line:{color:'#d29922', width:1, dash:'dot'}},
-        {type:'line', xref:'paper', x0:0, x1:1, y0:vib_crit, y1:vib_crit,
-          line:{color:'#f85149', width:1, dash:'dot'}},
-    ],
-    annotations: [
-        {xref:'paper', x:1, y:vib_warn, text:'Warning', showarrow:false,
-          font:{color:'#d29922', size:10}, xanchor:'right'},
-        {xref:'paper', x:1, y:vib_crit, text:'Critical', showarrow:false,
-          font:{color:'#f85149', size:10}, xanchor:'right'},
-    ]
+shapes: [
+// Good zone
+{type:'rect', xref:'paper', x0:0, x1:1, y0:0, y1:vib_warn,
+fillcolor:'rgba(63,185,80,0.06)', line:{width:0}},
+// Warning zone
+{type:'rect', xref:'paper', x0:0, x1:1, y0:vib_warn, y1:vib_crit,
+fillcolor:'rgba(210,153,34,0.10)', line:{width:0}},
+// Critical zone
+{type:'rect', xref:'paper', x0:0, x1:1, y0:vib_crit, y1:vib_crit*1.6,
+fillcolor:'rgba(248,81,73,0.10)', line:{width:0}},
+{type:'line', xref:'paper', x0:0, x1:1, y0:vib_warn, y1:vib_warn,
+line:{color:'#d29922', width:1, dash:'dot'}},
+{type:'line', xref:'paper', x0:0, x1:1, y0:vib_crit, y1:vib_crit,
+line:{color:'#f85149', width:1, dash:'dot'}},
+],
+annotations: [
+{xref:'paper', x:1, y:vib_warn, text:'Warning', showarrow:false,
+font:{color:'#d29922', size:10}, xanchor:'right'},
+{xref:'paper', x:1, y:vib_crit, text:'Critical', showarrow:false,
+font:{color:'#f85149', size:10}, xanchor:'right'},
+]
 }), config);
 
 </script>
