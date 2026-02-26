@@ -8,6 +8,7 @@ Output: data/processed/preprocessed_can_data.csv
 
 import csv
 import math
+from collections import deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -58,6 +59,36 @@ def preprocess_data(window_size=50):
 
     enriched_data = []
 
+    # Rolling window state for O(1) mean/std updates
+    rolling = {
+        "rpm": deque(),
+        "temp": deque(),
+        "vib": deque(),
+        "oil": deque(),
+        "volt": deque(),
+    }
+    sums = {k: 0.0 for k in rolling}
+    sums_sq = {k: 0.0 for k in rolling}
+
+    def update_roll(key, value):
+        q = rolling[key]
+        q.append(value)
+        sums[key] += value
+        sums_sq[key] += value * value
+        if len(q) > window_size:
+            old = q.popleft()
+            sums[key] -= old
+            sums_sq[key] -= old * old
+
+    def mean_std(key):
+        q = rolling[key]
+        n = len(q)
+        if n == 0:
+            return 0.0, 0.0
+        mean = sums[key] / n
+        variance = max(0.0, (sums_sq[key] / n) - (mean * mean))
+        return mean, math.sqrt(variance)
+
     for i in range(len(data)):
         row = data[i]
         rpm = float(row[rpm_idx])
@@ -67,14 +98,17 @@ def preprocess_data(window_size=50):
         volt = float(row[volt_idx])
 
         # Rolling window
-        start_idx = max(0, i - window_size + 1)
-        window_rows = data[start_idx:i + 1]
+        update_roll("rpm", rpm)
+        update_roll("temp", temp)
+        update_roll("vib", vib)
+        update_roll("oil", oil)
+        update_roll("volt", volt)
 
-        rpm_mean, rpm_std = calc_mean_std([float(r[rpm_idx]) for r in window_rows])
-        temp_mean, temp_std = calc_mean_std([float(r[temp_idx]) for r in window_rows])
-        vib_mean, vib_std = calc_mean_std([float(r[vib_idx]) for r in window_rows])
-        oil_mean, oil_std = calc_mean_std([float(r[oil_idx]) for r in window_rows])
-        volt_mean, volt_std = calc_mean_std([float(r[volt_idx]) for r in window_rows])
+        rpm_mean, rpm_std = mean_std("rpm")
+        temp_mean, temp_std = mean_std("temp")
+        vib_mean, vib_std = mean_std("vib")
+        oil_mean, oil_std = mean_std("oil")
+        volt_mean, volt_std = mean_std("volt")
 
         # Rate of change
         shift_idx = max(0, i - window_size)

@@ -118,3 +118,32 @@ generate_pdf_report.py -> reports/anomaly_detection_report.pdf
 
 **Core pipeline**: Zero dependencies (pure Python 3)
 **Reports & notebooks**: matplotlib, pandas, fpdf2 (see requirements.txt)
+
+## Viewing Reports from GitHub
+
+
+### Host in the branch via GitHub Pages
+
+This repository includes a workflow that deploys `reports/` to GitHub Pages on each push.
+
+After enabling **Settings → Pages → Build and deployment: GitHub Actions**, your branch updates will be published at:
+
+- `https://<owner>.github.io/<repo>/dashboard.html`
+- `https://<owner>.github.io/<repo>/industrial_eda_report.html`
+- `https://<owner>.github.io/<repo>/dashboard_static.md`
+
+> Note: GitHub Pages serves the `reports/` directory directly as the site root in this setup.
+
+Interactive HTML reports (`reports/industrial_eda_report.html` and `reports/dashboard.html`) use JavaScript (Plotly).
+GitHub's `blob/` viewer does not execute embedded scripts, so opening those files directly on GitHub will not render charts.
+
+Use one of the following options instead:
+
+```bash
+# Option 1: open locally in browser (recommended)
+python3 -m http.server 8000
+# then visit: http://localhost:8000/reports/industrial_eda_report.html
+
+# Option 2: open the file directly from your filesystem
+# (double-click reports/industrial_eda_report.html)
+```
